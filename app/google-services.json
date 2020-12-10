@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1075042848378",
+    "project_id": "chatapp-1b62c",
+    "storage_bucket": "chatapp-1b62c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075042848378:android:df6c79c66306169a3275c3",
+        "android_client_info": {
+          "package_name": "com.axdav.messageapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075042848378-lrlevf6gjosb3h9mgpkug1a0v579jvfd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.axdav.messageapp",
+            "certificate_hash": "10099a13e557d365b42f5a86433c38d9b06a884f"
+          }
+        },
+        {
+          "client_id": "1075042848378-qbj1jar1r406s1cob1k9ifm0etbt3nkc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9wNrGpOZNTyfv2bScCG9YDnqK1utJiQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075042848378-qbj1jar1r406s1cob1k9ifm0etbt3nkc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
