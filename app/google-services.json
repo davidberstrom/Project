@@ -1,10 +1,40 @@
 {
   "project_info": {
     "project_number": "1075042848378",
+    "firebase_url": "https://chatapp-1b62c-default-rtdb.firebaseio.com",
     "project_id": "chatapp-1b62c",
     "storage_bucket": "chatapp-1b62c.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075042848378:android:78fd1f27b0f9bebd3275c3",
+        "android_client_info": {
+          "package_name": "com.axdav.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075042848378-qbj1jar1r406s1cob1k9ifm0etbt3nkc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9wNrGpOZNTyfv2bScCG9YDnqK1utJiQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075042848378-qbj1jar1r406s1cob1k9ifm0etbt3nkc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:1075042848378:android:df6c79c66306169a3275c3",
