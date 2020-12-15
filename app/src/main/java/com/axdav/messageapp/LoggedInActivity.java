@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
+import com.axdav.messageapp.Fragments.FindUsersFragment;
 import com.axdav.messageapp.Fragments.FriendsFragment;
 import com.axdav.messageapp.Fragments.PositionsFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -71,7 +72,7 @@ public class LoggedInActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -81,6 +82,8 @@ public class LoggedInActivity extends AppCompatActivity {
                     return new FriendsFragment();
                 case 1:
                     return new PositionsFragment();
+                case 2:
+                    return new FindUsersFragment();
             }
             return null;
         }
@@ -93,6 +96,8 @@ public class LoggedInActivity extends AppCompatActivity {
                     return getResources().getText(R.string.friends);
                 case 1:
                     return getResources().getText(R.string.positions);
+                case 2:
+                    return getResources().getText(R.string.find_users);
             }
             return null;
         }

@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 
 import com.axdav.messageapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class PositionsFragment extends Fragment {
 
     @Override
