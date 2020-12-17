@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -38,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         reg_button = findViewById(R.id.reg_button);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Users");
+
         reg_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,15 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-
-                    User user = new User(username,auth.getCurrentUser().getUid());
-
-                    HashMap<String, String> users = new HashMap<>();
-                    users.put("Username",user.getUsername());
-                    users.put("UserId",user.getUserId());
-                    users.put("image_url","Default");
-
-                    myRef.child(user.getUsername()).setValue(users);
+                    String userId = auth.getCurrentUser().getUid();
+                    myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new User(username,userId));
                     Intent intent = new Intent(RegisterActivity.this,LoggedInActivity.class);
                     startActivity(intent);
 

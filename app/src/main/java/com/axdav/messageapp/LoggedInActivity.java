@@ -16,12 +16,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
-import com.axdav.messageapp.Fragments.FindUsersFragment;
+import com.axdav.messageapp.Fragments.FindUserFragment;
 import com.axdav.messageapp.Fragments.FriendsFragment;
 import com.axdav.messageapp.Fragments.PositionsFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 
 public class LoggedInActivity extends AppCompatActivity {
     FirebaseUser currUser;
@@ -34,7 +35,6 @@ public class LoggedInActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         ViewPager page = (ViewPager) findViewById(R.id.view_pager);
         TabLayout tab = (TabLayout)findViewById(R.id.tabs);
-
         mAuth = FirebaseAuth.getInstance();
         currUser = mAuth.getCurrentUser();
 
@@ -44,25 +44,11 @@ public class LoggedInActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Toast toast  = Toast.makeText(this,"Welcome"+currUser.toString(),Toast.LENGTH_SHORT);
+
+
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.logout:
-                mAuth.signOut();
-                startActivity(new Intent(LoggedInActivity.this,StartActivity.class));
-                return true;
-            case R.id.notification:
-                //gör något -
-        }
-        return false;
-    }
 
     private class pageAdapter extends FragmentPagerAdapter{
 
@@ -83,7 +69,7 @@ public class LoggedInActivity extends AppCompatActivity {
                 case 1:
                     return new PositionsFragment();
                 case 2:
-                    return new FindUsersFragment();
+                    return new FindUserFragment();
             }
             return null;
         }
