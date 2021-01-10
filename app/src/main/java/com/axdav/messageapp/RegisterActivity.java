@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 import com.axdav.messageapp.Model.User;
-
+/*class used to register a new user*/
 public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth auth;
     TextView email,username,password;
@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
-
+    /*method to creata new account and starts the LoggedInActivity if succesful*/
     private void createAcc(final String username, String email, String password){
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override

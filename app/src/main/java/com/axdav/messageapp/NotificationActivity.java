@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/*class used to display friendrequest and retreving them from the database*/
 public class NotificationActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference friendRequests, allUsers;
@@ -47,7 +48,8 @@ public class NotificationActivity extends AppCompatActivity {
         setTitle("Notifications");
         getNotifications();
     }
-
+    /*method to retrive friendrequest from the database
+    * and setting the views adapter to represent each requests in the view*/
     private void getNotifications() {
         if (friendRequests != null) {
             DatabaseReference myFriendRequests = friendRequests.child(currentUser.getUid());

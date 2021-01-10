@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
+/*the main Activity which is populate by an tab and different fragments*/
 public class LoggedInActivity extends AppCompatActivity {
     FirebaseUser currUser;
     FirebaseAuth mAuth;
@@ -49,19 +50,22 @@ public class LoggedInActivity extends AppCompatActivity {
     }
 
 
-
+    /*private inner class providing the adapter to populate pages inside of a ViewPager*/
     private class pageAdapter extends FragmentPagerAdapter{
 
+        /*constructor*/
         public pageAdapter(FragmentManager f){
             super(f);
         }
 
         @Override
+        /*returns the number of pages*/
         public int getCount() {
             return 3;
         }
 
         @Override
+        /*returns a fragment based on which tab is selected*/
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
@@ -76,6 +80,7 @@ public class LoggedInActivity extends AppCompatActivity {
 
         @Nullable
         @Override
+        /*returns the titel of the tabs*/
         public CharSequence getPageTitle(int position) {
             switch(position){
                 case 0:

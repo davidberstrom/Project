@@ -41,6 +41,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
+/*This class is used to find users in the app and populate the GUI with such's objects */
 public class FindUserFragment extends Fragment {
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
@@ -51,10 +52,7 @@ public class FindUserFragment extends Fragment {
     private View view;
     private Button addFriend_btn;
 
-    public FindUserFragment() {
-        // Required empty public constructor
-    }
-
+    /**/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,12 +69,14 @@ public class FindUserFragment extends Fragment {
         return view;
     }
 
+    /*called before onCreateView and says that this class has an optionsmenu*/
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
+    /*creates the optionsmenu and displays it to the user. Also creates the functionality for the search image button */
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         inflater.inflate(R.menu.menu,menu);
 
@@ -114,6 +114,7 @@ public class FindUserFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    /*Defines the functionality for the otionsmenu*/
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -128,7 +129,7 @@ public class FindUserFragment extends Fragment {
     }
 
 
-    //method to search user where a String is compared to usernames in the database
+    /*method to search user where a String is compared to usernames in the database*/
     private void searchUser(final String query){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Users");
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -157,6 +158,8 @@ public class FindUserFragment extends Fragment {
             }
         });
     }
+
+    /*Retrives all users except the current user by looping through the database*/
     public void getAllUsers(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Users");
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();

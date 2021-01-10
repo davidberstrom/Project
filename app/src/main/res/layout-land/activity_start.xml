@@ -9,13 +9,13 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="500dp">
         <ImageView
             android:layout_weight="4"
             android:src="@drawable/ic_login"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="10dp" />
         <View
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -30,37 +30,23 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_margin="25dp"
+            android:layout_margin="10dp"
             android:textStyle="bold"
             android:textSize="40sp"
             android:textColor="#fff"
-            android:text="Register"
+            android:text="Sign in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:hint="Username"
             android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:textColor="#fff"
-            android:textColorHint="#eee"
-            android:paddingStart="10dp"
-            android:paddingLeft="10dp"
-            android:layout_margin="15dp"
-            android:background="@drawable/rounded_corner"
-            android:textSize="17sp"
-            />
-
-        <EditText
-            android:id="@+id/email"
             android:textColor="#fff"
             android:textColorHint="#eee"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
             android:hint="Email"
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:layout_width="400dp"
             android:layout_height="?actionBarSize"
             android:background="@drawable/rounded_corner"
             android:textSize="17sp" />
@@ -72,21 +58,27 @@
             android:paddingLeft="10dp"
             android:hint="Password"
             android:inputType="textPassword"
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_width="400dp"
             android:layout_height="?actionBarSize"
             android:background="@drawable/rounded_corner"
             android:textSize="17sp" />
         <Button
-            android:id="@+id/reg_button"
+            android:id="@+id/signIn_btn"
             android:paddingRight="20dp"
             android:paddingLeft="20dp"
             android:background="@drawable/rounded_corner_button"
-            android:text="Sign up"
+            android:text="sign in"
             android:textColor="#777"
             android:layout_width="wrap_content"
             android:layout_height="35dp" />
-
+        <TextView
+            android:id="@+id/register_txtView"
+            android:layout_marginTop="20dp"
+            android:textColor="#fff"
+            android:text="Not registered? register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </RelativeLayout>

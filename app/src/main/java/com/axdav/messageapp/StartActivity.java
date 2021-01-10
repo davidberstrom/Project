@@ -23,7 +23,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
+/*the first activity displayed to the user where the user
+* can log in or choose to register which in that case starts
+* the RegisterActivity */
 public class StartActivity extends AppCompatActivity {
     private TextView registerView;
     private FirebaseAuth auth;
@@ -57,13 +59,15 @@ public class StartActivity extends AppCompatActivity {
 
 
     }
-
+    /*called when the activity becomes visible to the user*/
     public void onStart(){
         super.onStart();
         FirebaseUser currUser = auth.getCurrentUser();
-        ifLoggedIn(currUser);
+        autocompleteEmail(currUser);
     }
 
+    /*Makes the "Register" text clickable and starts the
+    * RegisterActivity on click*/
     private void makeClickableTxtView(){
         String text = "Not registered? Register";
         SpannableString ss = new SpannableString(text);
@@ -85,12 +89,14 @@ public class StartActivity extends AppCompatActivity {
         registerView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void ifLoggedIn(FirebaseUser user){
+    /*fills the email text, which comes from the last logged in user*/
+    private void autocompleteEmail(FirebaseUser user){
         if(user!= null){
             email.setText(user.getEmail());
         }
     }
-
+    /*Method to sign in the user and starts the LoggedInActivity on success
+    * and on fail displays an error message*/
     private void Signin(String email, String password){
         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override

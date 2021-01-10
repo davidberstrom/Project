@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/*Activity which displays an users profile*/
 public class UserProfileActivity extends AppCompatActivity {
     private Button addFriendButton, acceptFriendButton, declineFriendButton, cancelFriendButton;
     private TextView username;
@@ -54,11 +55,14 @@ public class UserProfileActivity extends AppCompatActivity {
         initializeButtons();
     }
 
+    /*Method to send frendrequest, which is uploaded to the database*/
     private void sendFriendRequest() {
         friendReq.child(firebaseUser.getUid()).child(userId).setValue("sender");
         friendReq.child(userId).child(firebaseUser.getUid()).setValue("receiver");
         addFriendButton.setVisibility(View.INVISIBLE);
     }
+
+    /*method to retrive the current users friends and the selected profile friends*/
     private void getFriends(){
         DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference("Friends").child(currentUser.getUserId());
        DatabaseReference currentProfileReference = FirebaseDatabase.getInstance().getReference("Friends").child(currentProfile.getUserId());
@@ -93,6 +97,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    /*method to initialize buttons and setting the visibility
+    * based on if the current user has sent a friend request to the
+    * selected profile user, if they are already friends, if current user
+    * has recived a friendrequest from selected user*/
     private void initializeButtons(){
         addFriendButton = findViewById(R.id.add_friend_btn);
         acceptFriendButton = findViewById(R.id.accept_friend_btn);
@@ -163,13 +171,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    /*method to add a friend(send a friendrequest)*/
     public void onClickAdd(View view){
         Log.i("CREATION", "Added " + userId);
         addFriendButton.setVisibility(View.INVISIBLE);
         cancelFriendButton.setVisibility(View.VISIBLE);
         sendFriendRequest();
     }
-
+    /*method to accept a friendrequest*/
     public void onClickAccept(View view){
         Log.i("CREATION", "Accepted " + userId + " friend request");
         acceptFriendButton.setVisibility(View.INVISIBLE);
@@ -181,14 +190,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     }
-
+    /*method to decline a friendrequest*/
     public void onClickDecline(View view){
         Log.i("CREATION", "Declined " + userId + " friend request");
         acceptFriendButton.setVisibility(View.INVISIBLE);
         declineFriendButton.setVisibility(View.INVISIBLE);
         addFriendButton.setVisibility(View.VISIBLE);
     }
-
+    /*method to cancel a sent friendrequest*/
     public void onClickCancel(View view){
         Log.i("CREATION", "Canceled " + userId + " friend request");
         cancelFriendButton.setVisibility(View.INVISIBLE);
