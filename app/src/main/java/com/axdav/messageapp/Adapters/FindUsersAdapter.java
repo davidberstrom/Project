@@ -27,7 +27,7 @@ public class FindUsersAdapter extends RecyclerView.Adapter<FindUsersAdapter.View
     private Context context;
     private List<User> users;
     private User user;
-    final private myClickListener myClickListener = new myClickListener();
+    final private MyClickListener myClickListener = new MyClickListener();
 
     public FindUsersAdapter(Context context,List<User> users){
         this.context = context;
@@ -38,16 +38,15 @@ public class FindUsersAdapter extends RecyclerView.Adapter<FindUsersAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.find_user_item,parent,false);
-        Button b = view.findViewById(R.id.profile_btn);
-        b.setOnClickListener(myClickListener);
+        RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.find_user_item_layout);
+        rl.setOnClickListener(myClickListener);
         return new FindUsersAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         user = users.get(position);
-       holder.username.setText(user.getUsername());
-       holder.userId.setText(user.getUserId());
+        holder.username.setText(user.getUsername());
 
     }
 
@@ -62,21 +61,17 @@ public class FindUsersAdapter extends RecyclerView.Adapter<FindUsersAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username_View);
-            userId = itemView.findViewById(R.id.findUserItem_userId);
-         }
+        }
     }
 
-    private class myClickListener implements View.OnClickListener{
+    private class MyClickListener implements View.OnClickListener{
 
         @Override
         public void onClick(@NonNull View view) {
-            RelativeLayout rel = (RelativeLayout)view.getParent();
+            RelativeLayout rel = (RelativeLayout) view;
             TextView tv = rel.findViewById(R.id.username_View);
-            TextView id = rel.findViewById(R.id.findUserItem_userId);
-            String extraId = id.getText().toString();
             String extra = tv.getText().toString();
             Intent intent = new Intent(view.getContext(), UserProfileActivity.class);
-            intent.putExtra("ID",extraId);
             intent.putExtra("NAME", extra);
             view.getContext().startActivity(intent);
         }

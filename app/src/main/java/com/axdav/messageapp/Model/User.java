@@ -7,7 +7,7 @@ public class User {
     private String username;
     private String imageURL;
     private String userId;
-    private List<String> friends = new ArrayList<>();
+    private List<User> friends = new ArrayList<>();
 
     public User(){
 
@@ -33,11 +33,18 @@ public class User {
         this.username = username;
     }
 
-    public void addFriend(String id){
-        friends.add(id);
+    public void addFriend(User user){
+        friends.add(user);
     }
-    public void removeFriend(String id){
-        friends.remove(id);
+    public void removeFriend(User user){
+        friends.remove(user);
+    }
+    public String getFriends(){
+        String s = "";
+        for(User u : friends){
+            s += "[" + u.getUsername() + "]";
+        }
+        return s;
     }
 
     public String getUserId() {

@@ -128,9 +128,8 @@ public class FindUserFragment extends Fragment {
     }
 
 
-
+    //method to search user where a String is compared to usernames in the database
     private void searchUser(final String query){
-        //search users and initiate and set adapter
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Users");
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         myRef.addValueEventListener(new ValueEventListener() {
