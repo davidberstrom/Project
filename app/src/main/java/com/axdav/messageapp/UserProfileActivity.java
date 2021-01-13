@@ -28,15 +28,13 @@ import java.util.List;
 
 /*Activity which displays an users profile*/
 public class UserProfileActivity extends AppCompatActivity {
-    private Button addFriendButton, acceptFriendButton, declineFriendButton, cancelFriendButton;
-    private TextView username;
+    private Button addFriendButton, acceptFriendButton, declineFriendButton, cancelFriendButton, removeFriendButton;
+    private TextView username, description, testText;
     private String usernameTxt,userId;
-    private DatabaseReference friendReq,users;
+    private DatabaseReference friendReq,users,friendsRef;
     private FirebaseAuth mAuth;
     private FirebaseUser firebaseUser;
     private User currentProfile, currentUser;
-    private List<String> currentProfilefriends,currentUserFriends;
-    private boolean keepRunning = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,44 +45,26 @@ public class UserProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firebaseUser = mAuth.getCurrentUser();
         friendReq = FirebaseDatabase.getInstance().getReference("FriendRequests");
+        friendsRef = FirebaseDatabase.getInstance().getReference("Friends");
         users = FirebaseDatabase.getInstance().getReference("Users");
-        usernameTxt = getIntent().getStringExtra("NAME");
+        if(getIntent().getStringExtra("NAME") != null)
+            usernameTxt = getIntent().getStringExtra("NAME");
+        else
+            initializeMyProfile();
+        description = findViewById(R.id.profile_text);
         username.setText(usernameTxt);
-        currentUserFriends = new ArrayList<>();
-        currentProfilefriends = new ArrayList<>();
-        initializeButtons();
+        initializeFields();
     }
 
-    /*Method to send frendrequest, which is uploaded to the database*/
-    private void sendFriendRequest() {
-        friendReq.child(firebaseUser.getUid()).child(userId).setValue("sender");
-        friendReq.child(userId).child(firebaseUser.getUid()).setValue("receiver");
-        addFriendButton.setVisibility(View.INVISIBLE);
-    }
-
-    /*method to retrive the current users friends and the selected profile friends*/
-    private void getFriends(){
-        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference("Friends").child(currentUser.getUserId());
-       DatabaseReference currentProfileReference = FirebaseDatabase.getInstance().getReference("Friends").child(currentProfile.getUserId());
-
-       currentUserReference.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               for(DataSnapshot snap : snapshot.getChildren()){
-                 currentUserFriends.add(snap.getKey());
-               }
-           }
-
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
-
-           }
-       });
-        currentProfileReference.addValueEventListener(new ValueEventListener() {
+    private void initializeMyProfile(){
+        users.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snap : snapshot.getChildren()){
-                    currentProfilefriends.add(snap.getKey());
+                    User u = snap.getValue(User.class);
+                    if(u.getUserId().equals(firebaseUser.getUid())){
+                        usernameTxt = u.getUsername();
+                    }
                 }
             }
 
@@ -93,23 +73,27 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
-    /*method to initialize buttons and setting the visibility
-    * based on if the current user has sent a friend request to the
-    * selected profile user, if they are already friends, if current user
-    * has recived a friendrequest from selected user*/
-    private void initializeButtons(){
+    public void console(String s){
+        Log.i("Info", s);
+    }
+
+    private void initializeFields(){
         addFriendButton = findViewById(R.id.add_friend_btn);
         acceptFriendButton = findViewById(R.id.accept_friend_btn);
         declineFriendButton = findViewById(R.id.decline_friend_btn);
         cancelFriendButton = findViewById(R.id.cancel_friend_btn);
+        removeFriendButton = findViewById(R.id.remove_friend_btn);
+        testText = findViewById(R.id.test_text);
         addFriendButton.setVisibility(View.VISIBLE);
         acceptFriendButton.setVisibility(View.INVISIBLE);
         declineFriendButton.setVisibility(View.INVISIBLE);
         cancelFriendButton.setVisibility(View.INVISIBLE);
+        removeFriendButton.setVisibility(View.INVISIBLE);
+        description.setVisibility(View.INVISIBLE);
+        testText.setVisibility(View.INVISIBLE);
+
         users.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -122,8 +106,14 @@ public class UserProfileActivity extends AppCompatActivity {
                     if(user.getUserId().equals(firebaseUser.getUid())){
                         currentUser = user;
                     }
+                    if(getIntent().getStringExtra("NAME") == null){
+                        currentProfile = currentUser;
+                        addFriendButton.setVisibility(View.INVISIBLE);
+                        testText.setVisibility(View.VISIBLE);
+                    }
                 }
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -136,6 +126,12 @@ public class UserProfileActivity extends AppCompatActivity {
             currentUserInFriendRequests.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getValue() == null){
+                        cancelFriendButton.setVisibility(View.INVISIBLE);
+                        acceptFriendButton.setVisibility(View.INVISIBLE);
+                        declineFriendButton.setVisibility(View.INVISIBLE);
+                        addFriendButton.setVisibility(View.VISIBLE);
+                    }
                     for(DataSnapshot snap : snapshot.getChildren()){
                         if(snap.getKey().equals(userId)){
                             if(snap.getValue().equals("sender")){
@@ -148,11 +144,6 @@ public class UserProfileActivity extends AppCompatActivity {
                                 acceptFriendButton.setVisibility(View.VISIBLE);
                                 declineFriendButton.setVisibility(View.VISIBLE);
                                 cancelFriendButton.setVisibility(View.INVISIBLE);
-                            } else {
-                                addFriendButton.setVisibility(View.VISIBLE);
-                                acceptFriendButton.setVisibility(View.INVISIBLE);
-                                declineFriendButton.setVisibility(View.INVISIBLE);
-                                cancelFriendButton.setVisibility(View.INVISIBLE);
                             }
                         }
                     }
@@ -163,45 +154,73 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 }
             });
-        } else {
-            Toast toast = Toast.makeText(this, "Somethink went wronk", Toast.LENGTH_LONG);
-            toast.show();
         }
 
+        DatabaseReference friends = FirebaseDatabase.getInstance().getReference("Friends").child(firebaseUser.getUid());
+        friends.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue() == null){
+                    removeFriendButton.setVisibility(View.INVISIBLE);
+                    description.setVisibility(View.INVISIBLE);
+                }
+                for(DataSnapshot snap : snapshot.getChildren()){
+                    if(snap.getKey().equals(currentProfile.getUserId())){
+                        description.setVisibility(View.VISIBLE);
+                        addFriendButton.setVisibility(View.INVISIBLE);
+                        removeFriendButton.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
-    /*method to add a friend(send a friendrequest)*/
     public void onClickAdd(View view){
-        Log.i("CREATION", "Added " + userId);
+        friendReq.child(firebaseUser.getUid()).child(userId).setValue("sender");
+        friendReq.child(userId).child(firebaseUser.getUid()).setValue("receiver");
         addFriendButton.setVisibility(View.INVISIBLE);
         cancelFriendButton.setVisibility(View.VISIBLE);
-        sendFriendRequest();
     }
-    /*method to accept a friendrequest*/
+
     public void onClickAccept(View view){
-        Log.i("CREATION", "Accepted " + userId + " friend request");
         acceptFriendButton.setVisibility(View.INVISIBLE);
         declineFriendButton.setVisibility(View.INVISIBLE);
 
-        getFriends();
-        currentProfilefriends.add(currentUser.getUserId());
-        currentUserFriends.add(currentProfile.getUserId());
+        friendsRef.child(currentUser.getUserId()).child(currentProfile.getUserId()).setValue("friends");
+        friendsRef.child(currentProfile.getUserId()).child(currentUser.getUserId()).setValue("friends");
 
-
+        friendReq.child(currentUser.getUserId()).child(currentProfile.getUserId()).removeValue();
+        friendReq.child(currentProfile.getUserId()).child(currentUser.getUserId()).removeValue();
     }
-    /*method to decline a friendrequest*/
+
     public void onClickDecline(View view){
-        Log.i("CREATION", "Declined " + userId + " friend request");
         acceptFriendButton.setVisibility(View.INVISIBLE);
         declineFriendButton.setVisibility(View.INVISIBLE);
         addFriendButton.setVisibility(View.VISIBLE);
+
+        friendReq.child(currentUser.getUserId()).child(currentProfile.getUserId()).removeValue();
+        friendReq.child(currentProfile.getUserId()).child(currentUser.getUserId()).removeValue();
     }
-    /*method to cancel a sent friendrequest*/
-    public void onClickCancel(View view){
-        Log.i("CREATION", "Canceled " + userId + " friend request");
+
+    public void onClickCancel(View view) {
+        friendReq.child(currentUser.getUserId()).child(currentProfile.getUserId()).removeValue();
+        friendReq.child(currentProfile.getUserId()).child(currentUser.getUserId()).removeValue();
+
         cancelFriendButton.setVisibility(View.INVISIBLE);
         addFriendButton.setVisibility(View.VISIBLE);
+    }
+
+    public void onClickRemove(View view){
+        addFriendButton.setVisibility(View.VISIBLE);
+        removeFriendButton.setVisibility(View.INVISIBLE);
+        description.setVisibility(View.INVISIBLE);
+        friendsRef.child(currentUser.getUserId()).child(currentProfile.getUserId()).removeValue();
+        friendsRef.child(currentProfile.getUserId()).child(currentUser.getUserId()).removeValue();
     }
 }
 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.axdav.messageapp.Adapters.FindUsersAdapter;
 import com.axdav.messageapp.LoggedInActivity;
 import com.axdav.messageapp.Model.User;
+import com.axdav.messageapp.NotificationActivity;
 import com.axdav.messageapp.R;
 import com.axdav.messageapp.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,7 +49,7 @@ public class FindUserFragment extends Fragment {
     private RecyclerView recyclerView;
     private FindUsersAdapter adapter;
     private List<User> allUsers;
-
+    private FirebaseUser currentUser;
     private View view;
     private Button addFriend_btn;
 
@@ -59,7 +60,7 @@ public class FindUserFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         allUsers = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
-
+        currentUser = mAuth.getCurrentUser();
         view = inflater.inflate(R.layout.fragment_find_user, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -123,7 +124,7 @@ public class FindUserFragment extends Fragment {
                 startActivity(new Intent(getActivity(),StartActivity.class));
                 return true;
             case R.id.notification:
-                //gör något -
+                startActivity(new Intent(getActivity(), NotificationActivity.class));
         }
         return false;
     }
@@ -154,7 +155,8 @@ public class FindUserFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast toast = Toast.makeText(getContext(),"Failed to read from database, try again", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }
@@ -180,7 +182,8 @@ public class FindUserFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast toast = Toast.makeText(getContext(),"Failed to read from database, try again", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }

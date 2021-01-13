@@ -15,7 +15,7 @@
         app:civ_border_color="#FF000000"
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,13 +28,26 @@
         android:textColor="@color/colorPrimaryDark"
         android:text="Username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
+
+    <TextView
+        android:id="@+id/profile_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="172dp"
+        android:text="You are friends"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_username" />
+
     <Button
         android:id="@+id/add_friend_btn"
-        android:layout_width="75dp"
+        android:layout_width="wrap_content"
         android:layout_height="75dp"
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,7 +60,7 @@
 
     <Button
         android:id="@+id/accept_friend_btn"
-        android:layout_width="75dp"
+        android:layout_width="wrap_content"
         android:layout_height="75dp"
         android:text="Accept"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -60,7 +73,7 @@
 
     <Button
         android:id="@+id/decline_friend_btn"
-        android:layout_width="75dp"
+        android:layout_width="wrap_content"
         android:layout_height="75dp"
         android:text="Decline"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +86,7 @@
 
     <Button
         android:id="@+id/cancel_friend_btn"
-        android:layout_width="75dp"
+        android:layout_width="wrap_content"
         android:layout_height="75dp"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,55 +97,27 @@
         app:layout_constraintVertical_bias="0.8"
         android:onClick="onClickCancel"/>
 
-    <!--
-    <ImageButton
-        android:id="@+id/add_friend_btn"
-        android:layout_width="75dp"
+    <Button
+        android:id="@+id/remove_friend_btn"
+        android:layout_width="wrap_content"
         android:layout_height="75dp"
-        android:scaleType="fitCenter"
+        android:text="Remove"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_username"
         app:layout_constraintVertical_bias="0.8"
-        app:srcCompat="@drawable/add_friend" />
-    <ImageButton
-        android:id="@+id/accept_friend_btn"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="onClickRemove"/>
+
+    <TextView
+        android:id="@+id/test_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hej"
+        app:layout_constraintBottom_toTopOf="@+id/add_friend_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_username"
-        app:layout_constraintVertical_bias="0.8"
-        app:srcCompat="@drawable/add_friend" />
-    <ImageButton
-        android:id="@+id/decline_friend_btn"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_username"
-        app:layout_constraintVertical_bias="0.8"
-        app:srcCompat="@drawable/add_friend" />
-    <ImageButton
-        android:id="@+id/cancel_friend_btn"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_username"
-        app:layout_constraintVertical_bias="0.8"
-        app:srcCompat="@drawable/add_friend" />
-        -->
+        app:layout_constraintTop_toBottomOf="@+id/profile_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

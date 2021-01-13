@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,19 +16,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.axdav.messageapp.Model.User;
+import com.google.firebase.database.ValueEventListener;
+
 /*class used to register a new user*/
 public class RegisterActivity extends AppCompatActivity {
-    FirebaseAuth auth;
-    TextView email,username,password;
-    Button reg_button;
-    FirebaseDatabase database;
-    DatabaseReference myRef;
+    private FirebaseAuth auth;
+    private TextView email,username,password;
+    private Button reg_button;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef,usernamesRef;
+    private List<String> allUsernames;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +47,26 @@ public class RegisterActivity extends AppCompatActivity {
         reg_button = findViewById(R.id.reg_button);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Users");
+        allUsernames = new ArrayList<>();
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(allUsernames != null)
+                allUsernames.clear();
+
+                for(DataSnapshot snap : snapshot.getChildren()){
+                    User user = snap.getValue(User.class);
+                    allUsernames.add(user.getUsername().toLowerCase());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
 
         reg_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,9 +75,12 @@ public class RegisterActivity extends AppCompatActivity {
                 String emailTxt = email.getText().toString();
                 String userTxt = username.getText().toString();
                 if(passTxt.isEmpty() || emailTxt.isEmpty() || userTxt.isEmpty()){
-                    Toast empty = Toast.makeText(RegisterActivity.this,"feilds cannot be empty",Toast.LENGTH_SHORT);
+                    Toast empty = Toast.makeText(RegisterActivity.this,"fields cannot be empty",Toast.LENGTH_SHORT);
                     empty.show();
-                } else{
+                } else if(allUsernames.contains(userTxt.toLowerCase())) {
+                        Toast sameUserName = Toast.makeText(RegisterActivity.this,"Username already exists",Toast.LENGTH_SHORT);
+                        sameUserName.show();
+                }else{
                     createAcc(userTxt,emailTxt,passTxt);
                 }
             }
@@ -68,9 +99,8 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(intent);
 
                 }else{
-                    Toast failed = Toast.makeText(RegisterActivity.this,"Authentication failed",Toast.LENGTH_SHORT);
+                    Toast failed = Toast.makeText(RegisterActivity.this,"Failed to create account",Toast.LENGTH_SHORT);
                     failed.show();
-
                 }
             }
         });

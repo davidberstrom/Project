@@ -7,7 +7,6 @@ public class User {
     private String username;
     private String imageURL;
     private String userId;
-    private List<User> friends = new ArrayList<>();
 
     public User(){
 
@@ -31,20 +30,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void addFriend(User user){
-        friends.add(user);
-    }
-    public void removeFriend(User user){
-        friends.remove(user);
-    }
-    public String getFriends(){
-        String s = "";
-        for(User u : friends){
-            s += "[" + u.getUsername() + "]";
-        }
-        return s;
     }
 
     public String getUserId() {

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.axdav.messageapp.Model.MyLatLng;
 import com.axdav.messageapp.Model.User;
@@ -41,26 +42,30 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*class used for getting position from the user, upload it to the database and retriving position from each user in the database and mark it on a map.
 * if the a user isnt logged in it uses the last location. */
 public class PositionsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private FusedLocationProviderClient fusedLocationClient;
     private SupportMapFragment supportMapFragment;
-    private DatabaseReference positionRef;
+    private DatabaseReference positionRef,friendsRef;
     private FirebaseUser currentUser;
     private LocationRequest locationRequest;
     private GoogleMap map;
     private String username;
     private final int LOCATION_REQUEST_CODE = 1000;
-
+    private List<String> friendsUid = new ArrayList<>();
+    private List<String> presence = new ArrayList<>();
     /*A callback function called each specified time it should update the users location*/
     private LocationCallback locationCallback = new LocationCallback(){
         @Override
         public void onLocationResult(LocationResult locationResult) {
             if(locationResult != null){
-                for(Location l : locationResult.getLocations()){
-                    positionRef.child(currentUser.getUid()).setValue(new MyLatLng(l.getLatitude(),l.getLongitude()));
+                for(Location pos : locationResult.getLocations()){
+                    positionRef.child(currentUser.getUid()).setValue(new MyLatLng(pos.getLatitude(),pos.getLongitude()));
                     retrivePosition();
                 }
             }
@@ -79,10 +84,10 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
         supportMapFragment.getMapAsync(this);
 
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(4000);
-       locationRequest.setFastestInterval(2000);
+        locationRequest.setInterval(15000);
+       locationRequest.setFastestInterval(10000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
+        friendsRef = FirebaseDatabase.getInstance().getReference("Friends").child(currentUser.getUid());
         //check if user already has permissions, else ask for permisson which then invokes the onRequestPerimssionsResult method.
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
            startLocationUpdates();
@@ -124,9 +129,9 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
         stopLocationUpdates();
     }
 
-    /*Function to get position from each user*/
+    /*Function to get position from current user friends and the current user*/
     private void retrivePosition(){
-
+        getFriendsId();
         positionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -134,20 +139,29 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
                     map.clear();
                 }
                 for(DataSnapshot snap : snapshot.getChildren()){
-                    MyLatLng myLatLng = snap.getValue(MyLatLng.class);
                     String uId = snap.getKey();
-                    LatLng latLng = new LatLng(myLatLng.getLatitude(),myLatLng.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    updateUI(uId,markerOptions,latLng);
-
-
-
+                    if(!friendsUid.isEmpty()) {
+                        for (int i = 0; i < friendsUid.size(); i++) {
+                            if (friendsUid.get(i).equals(snap.getKey()) || uId.equals(currentUser.getUid())) {
+                                MyLatLng myLatLng = snap.getValue(MyLatLng.class);
+                                LatLng latLng = new LatLng(myLatLng.getLatitude(), myLatLng.getLongitude());
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                updateUI(uId, markerOptions, latLng);
+                            }
+                        }
+                    } else if(uId.equals(currentUser.getUid())){
+                        MyLatLng myLatLng = snap.getValue(MyLatLng.class);
+                        LatLng latLng = new LatLng(myLatLng.getLatitude(), myLatLng.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        updateUI(currentUser.getUid(), markerOptions, latLng);
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast toast = Toast.makeText(getContext(),"Failed to read from database, try again", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }
@@ -162,7 +176,6 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
 
     /*Method which updates the UI by setting a marker for each user*/
     private void updateUI(final String uId, final MarkerOptions marker, final LatLng pos) {
-        Log.i("USERNAME", "getUsername: " + uId);
         final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
         userRef.child(uId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -172,9 +185,7 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
                 }else {
                     username = snapshot.getValue(User.class).getUsername();
                 }
-                if(snapshot.getValue(User.class).getImageURL().equals("Default")){
-                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.maps_icon));
-                }
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.maps_icon));
                 marker.title(username);
                 marker.position(pos);
                 map.addMarker(marker);
@@ -183,9 +194,11 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast toast = Toast.makeText(getContext(),"Failed to read from database, try again", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
+
     }
     /*Called when the fragment is active and ready for user interaction*/
     @Override
@@ -201,4 +214,27 @@ public class PositionsFragment extends Fragment implements OnMapReadyCallback, G
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,5));
         return false;
     }
+    /*Method to retrive current user friends ids */
+    private void getFriendsId(){
+        if(!friendsUid.isEmpty()){
+            friendsUid.clear();
+        }
+        friendsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot s : snapshot.getChildren()) {
+                        String id = s.getKey();
+                        friendsUid.add(id);
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast toast = Toast.makeText(getContext(),"Failed to read from database, try again", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
+
+
 }

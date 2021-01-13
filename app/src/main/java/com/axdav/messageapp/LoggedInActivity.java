@@ -23,12 +23,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /*the main Activity which is populate by an tab and different fragments*/
 public class LoggedInActivity extends AppCompatActivity {
     FirebaseUser currUser;
     FirebaseAuth mAuth;
     Toolbar toolbar;
+    private DatabaseReference isOnline;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,6 @@ public class LoggedInActivity extends AppCompatActivity {
         TabLayout tab = (TabLayout)findViewById(R.id.tabs);
         mAuth = FirebaseAuth.getInstance();
         currUser = mAuth.getCurrentUser();
-
         pageAdapter adapt = new pageAdapter(getSupportFragmentManager());
         page.setAdapter(adapt);
         tab.setupWithViewPager(page);
